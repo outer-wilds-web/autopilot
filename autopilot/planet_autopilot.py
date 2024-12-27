@@ -21,7 +21,13 @@ class PlanetAutopilot(AutopilotBase):
 
                 # Récupérer la position du vaisseau et de la planète cible
                 ship_position = data["ship"]["position"]
-                planets = {planet[0]: planet[1] for planet in data["planets"]}
+
+                # Préparer un dictionnaire des planètes avec ajustement pour les coordonnées en 3D
+                # car pour le moment le websocket renvoie les planètres dans un plan 2D et le vaisseau dans un plan 3D
+                planets = {
+                    planet[0]: planet[1] + [0] if len(planet[1]) == 2 else planet[1]
+                    for planet in data["planets"]
+                }
 
                 if self.target_planet not in planets:
                     self.log(f"Planète {self.target_planet} non trouvée!")
