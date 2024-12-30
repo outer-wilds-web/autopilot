@@ -1,4 +1,6 @@
 import asyncio
+
+from autopilot.pattern_kafka_autopilot import PatternKafkaAutopilot
 from websocket_client import websocket_handler
 from autopilot.random_autopilot import RandomAutopilot
 from autopilot.planet_autopilot import PlanetAutopilot
@@ -9,6 +11,7 @@ if __name__ == "__main__":
     print("1. Autopilote aléatoire")
     print("2. Autopilote vers une planète")
     print("3. Autopilote avec Kafka")
+    print("4. Autopilote avec Kafka (motif prédéfini)")
 
     choice = input("Votre choix: ")
     verbose = input("Mode verbose (0=non, 1=oui): ").strip() == "1"
@@ -23,5 +26,14 @@ if __name__ == "__main__":
         if not kafka_server:
             kafka_server = "localhost:9092"
         asyncio.run(websocket_handler(ShipPositionKafkaAutopilot, kafka_server, verbose=verbose))
+    elif choice == "4":
+        kafka_server = input("Entrez l'adresse du serveur Kafka (défaut: localhost:9092): ").strip()
+        if not kafka_server:
+            kafka_server = "localhost:9092"
+        asyncio.run(websocket_handler(PatternKafkaAutopilot, kafka_server, verbose=verbose))
     else:
         print("Choix invalide")
+
+
+# if __name__ == "__main__":
+#     asyncio.run(websocket_handler(PatternKafkaAutopilot, "localhost:9092", verbose=0))
