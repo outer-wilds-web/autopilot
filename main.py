@@ -2,7 +2,7 @@ import asyncio
 from websocket_client import websocket_handler
 from autopilot.random_autopilot import RandomAutopilot
 from autopilot.planet_autopilot import PlanetAutopilot
-from autopilot.kafka_autopilot import ShipPositionKafkaAutopilot  # Nouveau import
+from autopilot.kafka_autopilot import ShipPositionKafkaAutopilot
 
 if __name__ == "__main__":
     print("Choisissez un autopilote:")

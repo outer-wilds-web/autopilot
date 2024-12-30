@@ -2,7 +2,7 @@ import asyncio
 import websockets
 from autopilot.random_autopilot import RandomAutopilot
 from autopilot.planet_autopilot import PlanetAutopilot
-from autopilot.kafka_autopilot import ShipPositionKafkaAutopilot  # Nouveau import
+from autopilot.kafka_autopilot import ShipPositionKafkaAutopilot
 
 
 async def websocket_handler(autopilot_class, *args, verbose=False):
