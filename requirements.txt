@@ -37,7 +37,7 @@ platformdirs==4.3.6
 pluggy==1.5.0
 promise==2.3
 prompt_toolkit==3.0.48
-protobuf==5.29.0
+protobuf>=3.20.3, <6
 psutil==6.1.0
 ptyprocess==0.7.0
 pure_eval==0.2.3
