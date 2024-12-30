@@ -1,0 +1,12 @@
+api:
+  host: localhost
+  port: 8000
+  timeout: 60
+  
+login:
+  email: autopilote@example.com
+  username: delta
+  password: mypassword
+
+ship:
+  name: ship-drunk
