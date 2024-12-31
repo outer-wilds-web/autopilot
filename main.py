@@ -7,10 +7,7 @@ from config.config import config
 from api_link import connection, ship_launch
 
 
-from autopilot.pattern_kafka_autopilot import PatternKafkaAutopilot
 from websocket_client import websocket_handler
-from autopilot.random_autopilot import RandomAutopilot
-from autopilot.planet_autopilot import PlanetAutopilot
 from autopilot.kafka_autopilot import ShipPositionKafkaAutopilot
 
 
@@ -71,20 +68,10 @@ def main():
     name = ship_register()
     choice = config["ship_driving"]["choice"]
     verbose = config["logger"]["verbose"]
-    kafka_server = f"{config["kafka"]["host"]}:{config["kafka"]["port"]}"
-    if choice == 1:
-        asyncio.run(websocket_handler(
-            RandomAutopilot, verbose=verbose, name=name))
-    elif choice == 2:
-        target_planet = input("Entrez le nom de la planète cible: ")
-        asyncio.run(websocket_handler(PlanetAutopilot,
-                    target_planet, verbose=verbose, name=name))
-    elif choice == "autopilot":
+    kafka_server = f"{config['kafka']['host']}:{config['kafka']['port']}"
+    if choice == "autopilot":
         asyncio.run(websocket_handler(
             ShipPositionKafkaAutopilot, kafka_server, verbose=verbose, name=name))
-    elif choice == 4:
-        asyncio.run(websocket_handler(
-            PatternKafkaAutopilot, kafka_server, verbose=verbose, name=name))
     else:
         print("Choix invalide")
 

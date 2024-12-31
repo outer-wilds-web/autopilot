@@ -34,7 +34,7 @@ class ShipPositionKafkaAutopilot(AutopilotBase):
     async def run(self):
         try:
             await self.initialize_producer()
-
+            send_kafka = 0
             while True:
                 message = await self.websocket.recv()
                 data = json.loads(message)
@@ -42,21 +42,19 @@ class ShipPositionKafkaAutopilot(AutopilotBase):
                 if self.verbose:
                     self.log(f"Received data: {json.dumps(data, indent=4)}")
 
-                ship_position = data["ship"]["position"]
-
-                print(ship_position)
-
-                position_message = {
-                    "timestamp": int(datetime.now().timestamp() * 1000),
-                    "type_object": "ship",
-                    "name": self.name,
-                    "x": ship_position[0],
-                    "y": ship_position[1],
-                    "z": ship_position[2]
-                }
-
-
-                await self.send_to_kafka(position_message)
+                if send_kafka == 15:
+                    ship_position = data["ship"]["position"]
+                    position_message = {
+                        "timestamp": int(datetime.now().timestamp() * 1000),
+                        "type_object": "ship",
+                        "name": self.name,
+                        "x": ship_position[0],
+                        "y": ship_position[1],
+                        "z": ship_position[2]
+                    }
+                    await self.send_to_kafka(position_message)
+                    send_kafka = 0
+                send_kafka += 1
 
                 engine_commands = {
                     "data": {
@@ -78,10 +76,10 @@ class ShipPositionKafkaAutopilot(AutopilotBase):
                 }
 
                 if self.verbose:
-                    self.log(f"Sending engine commands: {json.dumps(engine_commands, indent=4)}")
+                    self.log(f"Sending engine commands: {
+                             json.dumps(engine_commands, indent=4)}")
 
                 await self.websocket.send(json.dumps(engine_commands))
-                await asyncio.sleep(1)
 
         except Exception as e:
             self.log(f"Erreur dans la boucle principale: {str(e)}")

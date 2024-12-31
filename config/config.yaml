@@ -5,11 +5,11 @@ api:
   
 login:
   email: autopilote@example.com
-  username: delta
+  username: alphb
   password: mypassword
 
 ship:
-  name: ship-drunk2
+  name: ship-very-drunk2
 
 logger:
   verbose: FALSE
