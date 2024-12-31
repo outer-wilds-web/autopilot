@@ -1,12 +1,8 @@
 import asyncio
-
 import requests
 import time
-
 from config.config import config
 from api_link import connection, ship_launch
-
-
 from websocket_client import websocket_handler
 from autopilot.kafka_autopilot import ShipPositionKafkaAutopilot
 
@@ -28,15 +24,12 @@ def wait_for_api(api_url, timeout):
 
 
 def ship_register():
-    # Charger la configuration depuis le fichier YAML
     api_host = config["api"]["host"]
     api_port = config["api"]["port"]
     api_timeout = config["api"]["timeout"]
-    # Construire l'URL complète de l'API
     api_url = f"http://{api_host}:{api_port}"
 
     api_ping = f"{api_url}/ping"
-    # Vérifier si l'API est disponible
     if wait_for_api(api_ping, api_timeout):
         try:
             username = config["login"]["username"]
@@ -46,10 +39,10 @@ def ship_register():
                 api_url, email, password, username)
 
             if "error" in connection_response:
-                print(f"Erreur lors de la connexion: {connection_response['error']}")
+                print(f"Erreur lors de la connexion: {
+                      connection_response['error']}")
                 return
 
-            # Récupérer le token
             token = connection_response["token"]["access_token"]
             token_type = connection_response["token"]["token_type"]
             id_owner = connection_response["user"]["id"]
@@ -63,14 +56,15 @@ def ship_register():
 
 
 def main():
-
     name = ship_register()
     choice = config["ship_driving"]["choice"]
     verbose = config["logger"]["verbose"]
     kafka_server = f"{config['kafka']['host']}:{config['kafka']['port']}"
+    websocket_url = config["websocket"]["url"]
+
     if choice == "autopilot":
         asyncio.run(websocket_handler(
-            ShipPositionKafkaAutopilot, kafka_server, verbose=verbose, name=name))
+            ShipPositionKafkaAutopilot, kafka_server, websocket_url, verbose=verbose, name=name))
     else:
         print("Choix invalide")
 

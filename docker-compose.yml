@@ -1,0 +1,46 @@
+services:
+  autopilot1:
+    build:
+      context: ../autopilot
+      dockerfile: Dockerfile
+    container_name: autopilot1
+    environment:
+      API_HOST: backend
+      API_PORT: 8000
+      API_TIMEOUT: 30
+      WEBSOCKET_URL: ws://rust-server:3012
+      KAFKA_BROKERS: kafka:9092
+      KAFKA_TOPIC: ship-positions
+      LOGIN_USERNAME: BOB
+      LOGIN_EMAIL: BOB@example.com
+      LOGIN_PASSWORD: secret_password
+      SHIP_NAME: alpha_1
+      CHOICE: autopilot
+      LOGGER_VERBOSE: false
+    networks:
+      - docker_compose_app-network
+
+  autopilot2:
+    build:
+      context: ../autopilot
+      dockerfile: Dockerfile
+    container_name: autopilot2
+    environment:
+      API_HOST: backend
+      API_PORT: 8000
+      API_TIMEOUT: 30
+      WEBSOCKET_URL: ws://rust-server:3012
+      KAFKA_BROKERS: kafka:9092
+      KAFKA_TOPIC: ship-positions
+      LOGIN_USERNAME: NOEL
+      LOGIN_EMAIL: NOEL@example.com
+      LOGIN_PASSWORD: secret_password
+      SHIP_NAME: sheep
+      CHOICE: autopilot
+      LOGGER_VERBOSE: false
+    networks:
+      - docker_compose_app-network
+
+networks:
+  docker_compose_app-network:
+    external: true

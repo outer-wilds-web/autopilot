@@ -4,15 +4,14 @@ import websockets
 from autopilot.kafka_autopilot import ShipPositionKafkaAutopilot
 
 
-async def websocket_handler(autopilot_class, *args, verbose=False, name):
-    uri = "ws://127.0.0.1:3012"
-    async with websockets.connect(uri, ping_timeout=None) as websocket:
-        print("Connecté au serveur WebSocket")
+async def websocket_handler(autopilot_class, kafka_server, websocket_url, verbose=False, name="default"):
+    print(f"Connecting to WebSocket at {websocket_url}...")
 
-        if autopilot_class is ShipPositionKafkaAutopilot:
+    try:
+        async with websockets.connect(websocket_url) as websocket:
+            print("WebSocket connection established.")
             autopilot = autopilot_class(
-                websocket, verbose=verbose, kafka_bootstrap_servers=args[0], name=name)
-        else:
-            autopilot = autopilot_class(websocket, *args, verbose, name=name)
-
-        await autopilot.run()
+                websocket, verbose=verbose, kafka_bootstrap_servers=kafka_server, name=name)
+            await autopilot.run()
+    except Exception as e:
+        print(f"WebSocket connection failed: {e}")
