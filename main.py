@@ -46,8 +46,7 @@ def ship_register():
                 api_url, email, password, username)
 
             if "error" in connection_response:
-                print(f"Erreur lors de la connexion: {
-                      connection_response['error']}")
+                print(f"Erreur lors de la connexion: {connection_response['error']}")
                 return
 
             # Récupérer le token
