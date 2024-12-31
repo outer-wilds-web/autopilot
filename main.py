@@ -30,17 +30,7 @@ def wait_for_api(api_url, timeout):
     return False
 
 
-def main():
-    name = None
-    print("Choisissez un autopilote:")
-    print("1. Autopilote aléatoire")
-    print("2. Autopilote vers une planète")
-    print("3. Autopilote avec Kafka")
-    print("4. Autopilote avec Kafka (motif prédéfini)")
-
-    choice = input("Votre choix: ")
-    verbose = input("Mode verbose (0=non, 1=oui): ").strip() == "1"
-
+def ship_register():
     # Charger la configuration depuis le fichier YAML
     api_host = config["api"]["host"]
     api_port = config["api"]["port"]
@@ -59,7 +49,8 @@ def main():
                 api_url, email, password, username)
 
             if "error" in connection_response:
-                print(f"Erreur lors de la connexion: {connection_response['error']}")
+                print(f"Erreur lors de la connexion: {
+                      connection_response['error']}")
                 return
 
             # Récupérer le token
@@ -69,31 +60,29 @@ def main():
             name = config["ship"]["name"]
 
             ship = ship_launch(api_url, id_owner, name, token_type, token)
-            print(ship["name"])
-            name = ship["name"]
+            return ship["name"]
         except Exception as e:
             print(f"Erreur dans le processus: {e}")
-            return
+            return None
 
-    print("TEST")
-    if choice == "1":
-        asyncio.run(websocket_handler(RandomAutopilot, verbose=verbose, name=name))
-    elif choice == "2":
+
+def main():
+
+    name = ship_register()
+    choice = config["ship_driving"]["choice"]
+    verbose = config["logger"]["verbose"]
+    kafka_server = f"{config["kafka"]["host"]}:{config["kafka"]["port"]}"
+    if choice == 1:
+        asyncio.run(websocket_handler(
+            RandomAutopilot, verbose=verbose, name=name))
+    elif choice == 2:
         target_planet = input("Entrez le nom de la planète cible: ")
         asyncio.run(websocket_handler(PlanetAutopilot,
                     target_planet, verbose=verbose, name=name))
-    elif choice == "3":
-        kafka_server = input(
-            "Entrez l'adresse du serveur Kafka (défaut: localhost:9092): ").strip()
-        if not kafka_server:
-            kafka_server = "localhost:9092"
+    elif choice == "autopilot":
         asyncio.run(websocket_handler(
             ShipPositionKafkaAutopilot, kafka_server, verbose=verbose, name=name))
-    elif choice == "4":
-        kafka_server = input(
-            "Entrez l'adresse du serveur Kafka (défaut: localhost:9092): ").strip()
-        if not kafka_server:
-            kafka_server = "localhost:9092"
+    elif choice == 4:
         asyncio.run(websocket_handler(
             PatternKafkaAutopilot, kafka_server, verbose=verbose, name=name))
     else:

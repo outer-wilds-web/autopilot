@@ -9,4 +9,14 @@ login:
   password: mypassword
 
 ship:
-  name: ship-drunk
+  name: ship-drunk2
+
+logger:
+  verbose: FALSE
+
+ship_driving:
+  choice: "autopilot"
+
+kafka:
+  host: localhost
+  port: 9092

@@ -25,11 +25,12 @@ def connection(api_url: str, email: str, password: str, username: str):
 
     # Tenter l'enregistrement
     register_response = requests.post(register_endpoint, json=register_payload)
+    print(register_response.status_code, register_response.text)
     if register_response.status_code == 200:  # Succès
         print("Utilisateur enregistré avec succès.")
         return register_response.json()
 
-    elif register_response.status_code == 401 and "User already exists" in register_response.text:
+    elif register_response.status_code == 409 and "User already exists" in register_response.text:
         print("Utilisateur déjà existant. Passage à la connexion.")
     else:  # Autre erreur
         return {
