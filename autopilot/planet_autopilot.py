@@ -5,9 +5,10 @@ from autopilot.base_autopilot import AutopilotBase
 
 
 class PlanetAutopilot(AutopilotBase):
-    def __init__(self, websocket, target_planet, verbose=0):
+    def __init__(self, websocket, target_planet, verbose=0, name="default"):
         super().__init__(websocket, verbose)
         self.target_planet = target_planet
+        self.name = name
 
     async def run(self):
         while True:

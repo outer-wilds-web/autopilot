@@ -6,13 +6,14 @@ from .base_autopilot import AutopilotBase
 
 
 class PatternKafkaAutopilot(AutopilotBase):
-    def __init__(self, websocket, verbose=False, kafka_bootstrap_servers='localhost:9092'):
+    def __init__(self, websocket, verbose=False, kafka_bootstrap_servers='localhost:9092', name="default"):
         super().__init__(websocket, verbose)
         self.producer = None
         self.kafka_bootstrap_servers = kafka_bootstrap_servers
         self.topic_name = 'ship-positions'
         self.movement_index = 0
         self.movement_duration = 5
+        self.name = name
 
         # self.movement_patterns = [
         #     {
@@ -47,25 +48,9 @@ class PatternKafkaAutopilot(AutopilotBase):
 
         self.movement_patterns = [
             {
-                "engines": {"front": True, "back": False, "left": False, "right": False, "up": False, "down": False},
+                "engines": {"front": False, "back": True, "left": False, "right": False, "up": False, "down": False},
                 "rotation": {"left": False, "right": False, "up": False, "down": False}
-            },
-            {
-                "engines": {"front": True, "back": False, "left": False, "right": False, "up": False, "down": False},
-                "rotation": {"left": False, "right": False, "up": False, "down": False}
-            },
-            {
-                "engines": {"front": True, "back": False, "left": False, "right": False, "up": False, "down": False},
-                "rotation": {"left": False, "right": False, "up": False, "down": False}
-            },
-            {
-                "engines": {"front": True, "back": False, "left": False, "right": False, "up": False, "down": False},
-                "rotation": {"left": False, "right": False, "up": False, "down": False}
-            },
-            {
-                "engines": {"front": True, "back": False, "left": False, "right": False, "up": False, "down": False},
-                "rotation": {"left": False, "right": False, "up": False, "down": False}
-            },
+            }
         ]
 
     async def initialize_producer(self):
@@ -113,7 +98,7 @@ class PatternKafkaAutopilot(AutopilotBase):
                 position_message = {
                     "timestamp": int(datetime.now().timestamp() * 1000),
                     "type_object": "ship",
-                    "name": data["ship"].get("id", "unknown"),
+                    "name": self.name,
                     "x": ship_position[0],
                     "y": ship_position[1],
                     "z": ship_position[2]

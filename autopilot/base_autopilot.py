@@ -1,7 +1,8 @@
 class AutopilotBase:
-    def __init__(self, websocket, verbose=0):
+    def __init__(self, websocket, verbose=0, name="default"):
         self.websocket = websocket
         self.verbose = verbose
+        self.name = name
 
     async def run(self):
         """Méthode principale pour exécuter l'autopilote."""

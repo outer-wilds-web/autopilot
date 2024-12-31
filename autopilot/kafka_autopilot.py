@@ -7,11 +7,12 @@ from .base_autopilot import AutopilotBase
 
 
 class ShipPositionKafkaAutopilot(AutopilotBase):
-    def __init__(self, websocket, verbose=False, kafka_bootstrap_servers='localhost:9092'):
+    def __init__(self, websocket, verbose=False, kafka_bootstrap_servers='localhost:9092', name="default"):
         super().__init__(websocket, verbose)
         self.producer = None
         self.kafka_bootstrap_servers = kafka_bootstrap_servers
         self.topic_name = 'ship-positions'
+        self.name = name
 
     async def initialize_producer(self):
         self.producer = AIOKafkaProducer(
@@ -48,7 +49,7 @@ class ShipPositionKafkaAutopilot(AutopilotBase):
                 position_message = {
                     "timestamp": int(datetime.now().timestamp() * 1000),
                     "type_object": "ship",
-                    "name": data["ship"].get("id", "unknown"),
+                    "name": self.name,
                     "x": ship_position[0],
                     "y": ship_position[1],
                     "z": ship_position[2]
